@@ -104,16 +104,16 @@ int main(void)
 }
 
 // ADC10 interrupt service routine
-#pragma vector=ADC10_VECTOR													// ADC10 中斷(interrupt)副程式
+#pragma vector=ADC10_VECTOR // ADC10 中斷(interrupt)副程式
 __interrupt void ADC10_ISR (void)
 {
-  __bic_SR_register_on_exit(CPUOFF);        // Clear CPUOFF bit from 0(SR)	//清除CPUOFF值(也就是讓CPU恢復工作模式)
-}																			//然後就回到主程式
+  __bic_SR_register_on_exit(CPUOFF);  // Clear CPUOFF bit from 0(SR)	//清除CPUOFF值(也就是讓CPU恢復工作模式)
+} //然後就回到主程式
 
 
-#pragma vector=TIMER0_A0_VECTOR												// TIMER0 A0 中斷(interrupt)副程式
+#pragma vector=TIMER0_A0_VECTOR // TIMER0 A0 中斷(interrupt)副程式
 __interrupt void ta0_isr(void)
 {
-  TACTL = 0;																//清除計數器的值(歸零)
-  LPM0_EXIT;                                // Exit LPM0 on return			//清除CPUOFF值(也就是讓CPU恢復工作模式)
-}																			//然後就回到主程式
+  TACTL = 0;  //清除計數器的值(歸零)
+  LPM0_EXIT;  // Exit LPM0 on return  //清除CPUOFF值(也就是讓CPU恢復工作模式)
+} //然後就回到主程式
