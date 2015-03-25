@@ -42,8 +42,8 @@
  * for an API functional library-approach to peripheral configuration.
  *
  * --/COPYRIGHT--*/
-//******************************************************************************		//從這裡開始看
-//  MSP430G2x33/G2x53 Demo - ADC10, Sample A10 Temp and Convert to oC and oF			//範例介紹
+//******************************************************************************  //從這裡開始看
+//  MSP430G2x33/G2x53 Demo - ADC10, Sample A10 Temp and Convert to oC and oF      //範例介紹
 //
 //  Description: A single sample is made on A10 with reference to internal
 //  1.5V Vref. Software sets ADC10SC to start sample and conversion - ADC10SC
@@ -66,7 +66,7 @@
 //  D. Dang
 //  Texas Instruments Inc.
 //  December 2010
-//   Built with CCS Version 4.2.0 and IAR Embedded Workbench Version: 5.10				//中文化：Edward Chen, 2015/03/25
+//   Built with CCS Version 4.2.0 and IAR Embedded Workbench Version: 5.10        //中文化：Edward Chen, 2015/03/25
 //******************************************************************************
 #include <msp430.h>
 
@@ -76,27 +76,27 @@ long IntDegC;
 
 int main(void)
 {
-  WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT						//停止看門狗
-  ADC10CTL1 = INCH_10 + ADC10DIV_3;         // Temp Sensor ADC10CLK/4		//INCH_10為溫度感應器所在腳位；ADC10DIV_3設定ADC模組時脈
-  ADC10CTL0 = SREF_1 + ADC10SHT_3 + REFON + ADC10ON + ADC10IE;				//設定ADC參數，可參考晶片使用手冊
-  __enable_interrupt();                     // Enable interrupts.			//開啟系統總interrupts
-  TACCR0 = 30;                              // Delay to allow Ref to settle	//設定計時器計數器初始值(因為Vref開啟至穩定需要時間)
-  TACCTL0 |= CCIE;                          // Compare-mode interrupt.		//開啟計數器interrupt
-  TACTL = TASSEL_2 | MC_1;                  // TACLK = SMCLK, Up mode.		//設定計數器時脈來源，計數方向(向上數至溢位)
-  LPM0;                                     // Wait for delay.				//關閉CPU(等待計數器溢位interrupt後將會喚醒CPU)
-  TACCTL0 &= ~CCIE;                         // Disable timer Interrupt		//關閉計數器interrupt
+  WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT                     //停止看門狗
+  ADC10CTL1 = INCH_10 + ADC10DIV_3;         // Temp Sensor ADC10CLK/4       //INCH_10為溫度感應器所在腳位；ADC10DIV_3設定ADC模組時脈
+  ADC10CTL0 = SREF_1 + ADC10SHT_3 + REFON + ADC10ON + ADC10IE;              //設定ADC參數，可參考晶片使用手冊
+  __enable_interrupt();                     // Enable interrupts.           //開啟系統總interrupts
+  TACCR0 = 30;                              // Delay to allow Ref to settle //設定計時器計數器初始值(因為Vref開啟至穩定需要時間)
+  TACCTL0 |= CCIE;                          // Compare-mode interrupt.      //開啟計數器interrupt
+  TACTL = TASSEL_2 | MC_1;                  // TACLK = SMCLK, Up mode.      //設定計數器時脈來源，計數方向(向上數至溢位)
+  LPM0;                                     // Wait for delay.              //關閉CPU(等待計數器溢位interrupt後將會喚醒CPU)
+  TACCTL0 &= ~CCIE;                         // Disable timer Interrupt      //關閉計數器interrupt
   __disable_interrupt();													//關閉系統總interrupts
 
   while(1)
   {
     ADC10CTL0 |= ENC + ADC10SC;             // Sampling and conversion start//開始取樣並轉換(ADC的運作內容)
-    __bis_SR_register(CPUOFF + GIE);        // LPM0 with interrupts enabled	//關閉CPU並開啟系統總interrupts(ADC轉換完畢會發生interrupt喚醒CPU)
+    __bis_SR_register(CPUOFF + GIE);        // LPM0 with interrupts enabled //關閉CPU並開啟系統總interrupts(ADC轉換完畢會發生interrupt喚醒CPU)
 
-    // oF = ((A10/1024)*1500mV)-923mV)*1/1.97mV = A10*761/1024 - 468		//10-bits ADC數值至華氏換算公式
-    temp = ADC10MEM;														//讀取ADC轉換結果暫存器
-    IntDegF = ((temp - 630) * 761) / 1024;									//實際換算程式
+    // oF = ((A10/1024)*1500mV)-923mV)*1/1.97mV = A10*761/1024 - 468        //10-bits ADC數值至華氏換算公式
+    temp = ADC10MEM;                                                        //讀取ADC轉換結果暫存器
+    IntDegF = ((temp - 630) * 761) / 1024;                                  //實際換算程式
 
-    // oC = ((A10/1024)*1500mV)-986mV)*1/3.55mV = A10*423/1024 - 278		//10-bits ADC數值至攝氏換算公式
+    // oC = ((A10/1024)*1500mV)-986mV)*1/3.55mV = A10*423/1024 - 278        //10-bits ADC數值至攝氏換算公式
     temp = ADC10MEM;
     IntDegC = ((temp - 673) * 423) / 1024;
     
@@ -104,16 +104,16 @@ int main(void)
 }
 
 // ADC10 interrupt service routine
-#pragma vector=ADC10_VECTOR // ADC10 中斷(interrupt)副程式
+#pragma vector=ADC10_VECTOR                                                // ADC10 中斷(interrupt)副程式
 __interrupt void ADC10_ISR (void)
 {
-  __bic_SR_register_on_exit(CPUOFF);  // Clear CPUOFF bit from 0(SR)	//清除CPUOFF值(也就是讓CPU恢復工作模式)
-} //然後就回到主程式
+  __bic_SR_register_on_exit(CPUOFF);       // Clear CPUOFF bit from 0(SR)  //清除CPUOFF值(也就是讓CPU恢復工作模式)
+}                                                                          //然後就回到主程式
 
 
-#pragma vector=TIMER0_A0_VECTOR // TIMER0 A0 中斷(interrupt)副程式
+#pragma vector=TIMER0_A0_VECTOR                                            // TIMER0 A0 中斷(interrupt)副程式
 __interrupt void ta0_isr(void)
 {
-  TACTL = 0;  //清除計數器的值(歸零)
-  LPM0_EXIT;  // Exit LPM0 on return  //清除CPUOFF值(也就是讓CPU恢復工作模式)
-} //然後就回到主程式
+  TACTL = 0;                                                               //清除計數器的值(歸零)
+  LPM0_EXIT;                              // Exit LPM0 on return           //清除CPUOFF值(也就是讓CPU恢復工作模式)
+}                                                                          //然後就回到主程式
